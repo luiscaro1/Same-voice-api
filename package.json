@@ -5,7 +5,19 @@
   "main": "src/Startup.js",
   "scripts": {
     "webpack-dev": "BUILD=webpack webpack --watch --stats-error-details",
-    "ts-dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register src/Startup.ts"
+    "ts-dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register src/Startup.ts",
+    "dc": "BUILD=CONTAINER docker compose -f docker-compose.dev.yml up --build",
+    "pc": "BUILD=CONTAINER docker compose -f docker-compose.production.yml up --build",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.+(ts)": [
+      "eslint --fix"
+    ],
+    "*.+(json|css|md)": [
+      "prettier --write"
+    ],
+    "*.js": "eslint --cache --fix"
   },
   "repository": {
     "type": "git",
@@ -15,9 +27,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/luiscaro1/Same-media-api/issues"
+    "url": "https://github.com/luiscaro1/Same-video-api/issues"
   },
-  "homepage": "https://github.com/luiscaro1/Same-media-api#readme",
+  "homepage": "https://github.com/luiscaro1/Same-video-api#readme",
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
