@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  voice-api:
+    build:
+      dockerfile: dockerfile.prod
+      context: .
+    restart: always
+    volumes:
+      - ".:/app"
+    ports:
+      - "5003:5003"
+ 
