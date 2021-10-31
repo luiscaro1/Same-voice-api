@@ -1,15 +1,22 @@
 const path = require('path');
 
 const Dotenv = require('dotenv-webpack');
-
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 
 module.exports = {
   target: 'node',
   mode: 'development',
+  optimization: {
+    minimizer: [
+      new ESBuildMinifyPlugin({
+        keepNames: true,
+      }),
+    ],
+  },
   entry: './src/Startup.ts',
   output: {
-    filename: 'bundle.js',
+    filename: 'dev.js',
     path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'inline-source-map',
