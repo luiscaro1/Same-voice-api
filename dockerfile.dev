@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . /app/
 
+ENV CLIENT_URL http://localhost:3000
+
 RUN npm i
 
 CMD npm run webpack-dev --bind:0.0.0.0

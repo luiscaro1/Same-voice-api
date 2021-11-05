@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   voice-api:
@@ -7,7 +7,6 @@ services:
       context: .
     restart: always
     volumes:
-      - ".:/app"
+      - '.:/app'
     ports:
-      - "5003:5003"
- 
+      - '5003:5003'

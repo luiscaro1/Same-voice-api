@@ -1,22 +1,48 @@
 import { Socket } from 'socket.io';
+import Inject from '@/Decorators/Inject';
 
-const socketsStatus: { [field: string | number]: any } = {};
+import VoiceLobby from '../Entities/VoiceLobby';
+import {
+  JOIN,
+  UPDATE_VOICE_LOBBY,
+  LEAVE,
+  VOICE,
+  RECEIVE_VOICE,
+} from './Events';
+import VoiceLobbyContext from '../VoiceLobbyContext';
 
-export default function voiceEvents(socket: Socket): void {
-  const socketId = socket.id;
-  socketsStatus[socket.id] = {};
+export default class VoiceEvents {
+  @Inject('vlContext') public static vlContext: VoiceLobbyContext;
 
-  socket.on('voice', (data: string) => {
-    if (!socketsStatus[socketId].mute) socket.emit('send', data);
-  });
+  public static handle(socket: Socket): void {
+    socket.onAny((eventName, args) => {
+      console.log({ eventName, args });
+    });
 
-  socket.on('userInformation', (data) => {
-    socketsStatus[socketId] = data;
+    socket.on(JOIN, ({ uid, lid }) => {
+      if (!VoiceEvents.vlContext.voiceLobbyList[lid])
+        VoiceEvents.vlContext.addLobby(new VoiceLobby(lid));
+      socket.join(lid);
+      VoiceEvents.vlContext.voiceLobbyList[lid].addUser(uid);
+      socket.nsp.to(lid).emit(UPDATE_VOICE_LOBBY);
+    });
 
-    socket.emit('usersUpdate', socketsStatus);
-  });
+    socket.on(LEAVE, ({ uid, lid }) => {
+      if (!VoiceEvents.vlContext.voiceLobbyList[lid]) return;
+      VoiceEvents.vlContext.voiceLobbyList[lid].removeUser(uid);
+      console.log(VoiceEvents.vlContext.voiceLobbyList[lid]);
+      socket.nsp.to(lid).emit(UPDATE_VOICE_LOBBY);
+      socket.leave(lid);
+    });
 
-  socket.on('disconnect', () => {
-    delete socketsStatus[socketId];
-  });
+    socket.on(
+      VOICE,
+      ({ lid, uid, data }: { lid: string; uid: string; data: string }) => {
+        if (!VoiceEvents.vlContext.voiceLobbyList[lid].userList[uid].muted)
+          socket.emit(RECEIVE_VOICE, data);
+      }
+    );
+
+    // socket.on('disconnect', () => {});
+  }
 }

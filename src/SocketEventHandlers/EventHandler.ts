@@ -1,6 +1,8 @@
 import { Socket } from 'socket.io';
-import voiceEvents from '@/SocketEventHandlers/Voice';
+import VoiceEvents from '@/SocketEventHandlers/Voice';
 
-export default function EventHandlers(socket: Socket): void {
-  voiceEvents(socket);
+export default class EventHandler {
+  public static handle(socket: Socket): void {
+    VoiceEvents.handle(socket);
+  }
 }

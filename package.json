@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/Startup.js",
   "scripts": {
-    "webpack-dev": "BUILD=webpack webpack --config webpack.dev.config  --watch --stats-error-details",
+    "webpack-dev": "BUILD=WEBPACK webpack --config webpack.dev.config  --watch --stats-error-details",
     "ts-dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register src/Startup.ts",
     "dc": "BUILD=CONTAINER docker compose -f docker-compose.dev.yml up --build",
     "pc": "BUILD=CONTAINER docker compose -f docker-compose.production.yml up --build",
@@ -16,8 +16,7 @@
     ],
     "*.+(json|css|md)": [
       "prettier --write"
-    ],
-    "*.js": "eslint --cache --fix"
+    ]
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
-import { find, FunctionBase } from "lodash";
+import { find, FunctionBase } from 'lodash';
 
 class ServiceContainer {
   public providers: { [key: string]: FunctionBase } = {};
