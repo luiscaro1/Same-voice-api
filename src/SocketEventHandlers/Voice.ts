@@ -2,13 +2,7 @@ import { Socket } from 'socket.io';
 import Inject from '@/Decorators/Inject';
 
 import VoiceLobby from '../Entities/VoiceLobby';
-import {
-  JOIN,
-  UPDATE_VOICE_LOBBY,
-  LEAVE,
-  VOICE,
-  RECEIVE_VOICE,
-} from './Events';
+import { JOIN, UPDATE_VOICE_LOBBY, LEAVE, VOICE } from './Events';
 import VoiceLobbyContext from '../VoiceLobbyContext';
 
 export default class VoiceEvents {
@@ -37,9 +31,25 @@ export default class VoiceEvents {
 
     socket.on(
       VOICE,
-      ({ lid, uid, data }: { lid: string; uid: string; data: string }) => {
-        if (!VoiceEvents.vlContext.voiceLobbyList[lid].userList[uid].muted)
-          socket.emit(RECEIVE_VOICE, data);
+      ({
+        lid,
+        userState,
+        data,
+      }: {
+        lid: string;
+        userState: { uid: string; muted: boolean };
+        data: string;
+      }) => {
+        const newData = data.split(';');
+        newData[0] = 'data:audio/ogg;';
+        const res = newData[0] + newData[1];
+        // if (!VoiceEvents.vlContext.voiceLobbyList[lid].userList[uid].muted)
+
+        // if (!userState?.muted)
+        socket.to(lid).emit(VOICE, res);
+        // VoiceEvents.vlContext.voiceLobbyList[lid].userList[userState.uid] = {
+        //   ...userState,
+        // };
       }
     );
 
