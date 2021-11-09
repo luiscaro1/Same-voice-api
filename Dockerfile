@@ -8,6 +8,8 @@ RUN npm install --production
 
 COPY dist/prod.js /app/
 
+ENV CLIENT_URL https://same-client-ui.herokuapp.com
+
 ENV NODE_ENV production
 
 CMD node prod.js --bind:0.0.0.0
