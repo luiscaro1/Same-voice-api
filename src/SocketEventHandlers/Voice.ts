@@ -33,8 +33,6 @@ export default class VoiceEvents {
         1
       )
         delete VoiceEvents.vlContext.voiceLobbyList[lid];
-      console.log(lid);
-      console.log(socket.rooms);
     });
 
     socket.on(
@@ -52,7 +50,7 @@ export default class VoiceEvents {
         newData[0] = 'data:audio/ogg;';
         const res = newData[0] + newData[1];
 
-        if (!userState?.muted) socket.nsp.to(lid).emit(VOICE, res);
+        if (!userState?.muted) socket.to(lid).emit(VOICE, res);
         VoiceEvents.vlContext.voiceLobbyList[lid].userList[userState.uid] = {
           ...userState,
         };
