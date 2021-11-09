@@ -19,14 +19,22 @@ export default class VoiceEvents {
       socket.join(lid);
       VoiceEvents.vlContext.voiceLobbyList[lid].addUser(uid);
       socket.nsp.to(lid).emit(UPDATE_VOICE_LOBBY);
+      console.log(socket.rooms);
     });
 
     socket.on(LEAVE, ({ uid, lid }) => {
       if (!VoiceEvents.vlContext.voiceLobbyList[lid]) return;
       VoiceEvents.vlContext.voiceLobbyList[lid].removeUser(uid);
-      console.log(VoiceEvents.vlContext.voiceLobbyList[lid]);
+
       socket.nsp.to(lid).emit(UPDATE_VOICE_LOBBY);
       socket.leave(lid);
+      if (
+        Object.keys(VoiceEvents.vlContext.voiceLobbyList[lid].userList).length <
+        1
+      )
+        delete VoiceEvents.vlContext.voiceLobbyList[lid];
+      console.log(lid);
+      console.log(socket.rooms);
     });
 
     socket.on(
@@ -43,13 +51,11 @@ export default class VoiceEvents {
         const newData = data.split(';');
         newData[0] = 'data:audio/ogg;';
         const res = newData[0] + newData[1];
-        // if (!VoiceEvents.vlContext.voiceLobbyList[lid].userList[uid].muted)
 
-        // if (!userState?.muted)
-        socket.to(lid).emit(VOICE, res);
-        // VoiceEvents.vlContext.voiceLobbyList[lid].userList[userState.uid] = {
-        //   ...userState,
-        // };
+        if (!userState?.muted) socket.nsp.to(lid).emit(VOICE, res);
+        VoiceEvents.vlContext.voiceLobbyList[lid].userList[userState.uid] = {
+          ...userState,
+        };
       }
     );
 
