@@ -1,7 +1,6 @@
 const path = require('path');
-
-const Dotenv = require('dotenv-webpack');
 const { ESBuildMinifyPlugin } = require('esbuild-loader');
+const webpack = require('webpack');
 
 module.exports = {
   target: 'node',
@@ -34,5 +33,19 @@ module.exports = {
     },
     extensions: ['.ts', '.js', '.tsx'],
   },
-  plugins: [new Dotenv({ path: path.resolve(__dirname, '.env') })],
+  plugins: [
+    // new Dotenv({ path: path.resolve(__dirname, '.env') }),
+
+    new webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ }),
+    new webpack.NormalModuleReplacementPlugin(
+      /m[sy]sql2?|oracle(db)?|sqlite3|pg-(native|query)/
+    ),
+  ],
+
+  externals: [
+    {
+      'utf-8-validate': 'commonjs utf-8-validate',
+      bufferutil: 'commonjs bufferutil',
+    },
+  ],
 };
