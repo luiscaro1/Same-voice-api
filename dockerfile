@@ -8,7 +8,7 @@ RUN npm install --production
 
 COPY dist/prod.js /app/
 
-ENV CLIENT_URL https://same-client-ui.herokuapp.com
+ENV CLIENT_URL https://same-client-ui.vercel.app
 ENV BUILD WEBPACK
 ENV NODE_ENV production
 
